@@ -1,4 +1,3 @@
-
 import java.util.HashMap;
 
 import javafx.application.Application;
@@ -18,8 +17,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class GuiServer extends Application{
-
-	
 	TextField s1,s2,s3,s4, c1;
 	Button serverChoice,clientChoice,b1;
 	HashMap<String, Scene> sceneMap;
@@ -30,9 +27,7 @@ public class GuiServer extends Application{
 	BorderPane startPane;
 	Server serverConnection;
 	Client clientConnection;
-	
 	ListView<String> listItems, listItems2;
-	
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -65,13 +60,14 @@ public class GuiServer extends Application{
 		this.clientChoice.setStyle("-fx-pref-height: 300px");
 		
 		this.clientChoice.setOnAction(e-> {primaryStage.setScene(sceneMap.get("client"));
-											primaryStage.setTitle("This is a client");
-											clientConnection = new Client(data->{
-							Platform.runLater(()->{listItems2.getItems().add(data.toString());
-											});
-							});
+										   primaryStage.setTitle("This is a client");
+										   clientConnection = new Client(data -> {
+											   Platform.runLater(() -> {
+												   listItems2.getItems().add(data.toString());
+											   });
+										   });
 							
-											clientConnection.start();
+										   clientConnection.start();
 		});
 		
 		this.buttonBox = new HBox(400, serverChoice, clientChoice);
@@ -101,15 +97,11 @@ public class GuiServer extends Application{
             }
         });
 		
-		 
-		
 		primaryStage.setScene(startScene);
 		primaryStage.show();
-		
 	}
 	
 	public Scene createServerGui() {
-		
 		BorderPane pane = new BorderPane();
 		pane.setPadding(new Insets(70));
 		pane.setStyle("-fx-background-color: coral");
@@ -117,16 +109,12 @@ public class GuiServer extends Application{
 		pane.setCenter(listItems);
 	
 		return new Scene(pane, 500, 400);
-		
-		
 	}
 	
 	public Scene createClientGui() {
-		
 		clientBox = new VBox(10, c1,b1,listItems2);
 		clientBox.setStyle("-fx-background-color: blue");
-		return new Scene(clientBox, 400, 300);
-		
-	}
 
+		return new Scene(clientBox, 400, 300);
+	}
 }

@@ -8,10 +8,6 @@ import java.util.function.Consumer;
 
 import javafx.application.Platform;
 import javafx.scene.control.ListView;
-/*
- * Clicker: A: I really get it    B: No idea what you are talking about
- * C: kind of following
- */
 
 public class Server{
 
@@ -20,22 +16,19 @@ public class Server{
 	TheServer server;
 	private Consumer<Serializable> callback;
 	
-	
 	Server(Consumer<Serializable> call){
 	
 		callback = call;
 		server = new TheServer();
 		server.start();
 	}
-	
-	
+
 	public class TheServer extends Thread{
 		
 		public void run() {
 		
 			try(ServerSocket mysocket = new ServerSocket(5555);){
 		    System.out.println("Server is waiting for a client!");
-		  
 			
 		    while(true) {
 		
@@ -53,11 +46,9 @@ public class Server{
 				}
 			}//end of while
 		}
-	
 
 		class ClientThread extends Thread{
-			
-		
+
 			Socket connection;
 			int count;
 			ObjectInputStream in;
@@ -106,8 +97,7 @@ public class Server{
 					    }
 					}
 				}//end of run
-			
-			
+
 		}//end of client thread
 }
 
