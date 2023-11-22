@@ -2,6 +2,7 @@ public class Word {
     int word_length;
     String word;
     char[] letters;
+    boolean guessed = false;
 
     Word() {
         this.word_length = 0;
@@ -16,9 +17,9 @@ public class Word {
         this.word_length = x;
     }
 
-    public String getWord(){
-        return word;
-    }
+//    public String getWord(){
+//        return word;
+//    }
     public void setWord(String word){
         this.word = word;
     }

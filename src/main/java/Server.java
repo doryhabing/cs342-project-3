@@ -12,9 +12,9 @@ public class Server {
 	int port;
 	int count = 1;
 	ArrayList<ClientThread> clients = new ArrayList<ClientThread>();
-	Set<String> guessed_letters = new HashSet<>();
 	TheServer server;
 	private Consumer<Serializable> callback;
+	Game game = new Game();
 	GameLogic logic = new GameLogic();
 
 	Server(Consumer<Serializable> call, String port_string) {
@@ -82,15 +82,23 @@ public class Server {
 				System.out.println("Streams not open");
 			}
 
+			int i = 0;
 			while (true) {
 				try {
 					String data = in.readObject().toString();
 					callback.accept("client: " + count + " sent: " + data);
 
-					guessed_letters.add(data);
+					if (i == 0 && data.length() >= 2) {
+						System.out.println(data);
+						String new_word = game.newWord(data);
+						updateClients("length");
+						updateClients(String.valueOf(new_word.length()));
 
-					//updateClients();
+					} else if (data.length() < 2){
+						logic.guessed_letters.add(data);
+					}
 
+					i++;
 				} catch (Exception e) {
 					callback.accept("OOOOPPs...Something wrong with the socket from client: " + count + "....closing down!");
 					//updateClients("Client #" + count + " has left the server!");
@@ -99,7 +107,6 @@ public class Server {
 				}
 			}
 		}//end of run
-
 	}//end of client thread
 }
 
