@@ -4,17 +4,18 @@ import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
-
-import javafx.application.Platform;
-import javafx.scene.control.ListView;
 
 public class Server {
 	int port;
 	int count = 1;
 	ArrayList<ClientThread> clients = new ArrayList<ClientThread>();
+	Set<String> guessed_letters = new HashSet<>();
 	TheServer server;
 	private Consumer<Serializable> callback;
+	GameLogic logic = new GameLogic();
 
 	Server(Consumer<Serializable> call, String port_string) {
 		callback = call;
@@ -31,14 +32,11 @@ public class Server {
 				System.out.println("Server is waiting for a client!");
 
 				while (true) {
-
 					ClientThread c = new ClientThread(mysocket.accept(), count);
 					callback.accept("client has connected to server: " + "client #" + count);
 					clients.add(c);
 					c.start();
-
 					count++;
-
 				}
 			}//end of try
 			catch (Exception e) {
@@ -75,21 +73,27 @@ public class Server {
 				in = new ObjectInputStream(connection.getInputStream());
 				out = new ObjectOutputStream(connection.getOutputStream());
 				connection.setTcpNoDelay(true);
+
+				updateClients(logic.category1);
+				updateClients(logic.category2);
+				updateClients(logic.category3);
+
 			} catch (Exception e) {
 				System.out.println("Streams not open");
 			}
-
-			updateClients("new client on server: client #" + count);
 
 			while (true) {
 				try {
 					String data = in.readObject().toString();
 					callback.accept("client: " + count + " sent: " + data);
-					updateClients("client #" + count + " said: " + data);
+
+					guessed_letters.add(data);
+
+					//updateClients();
 
 				} catch (Exception e) {
 					callback.accept("OOOOPPs...Something wrong with the socket from client: " + count + "....closing down!");
-					updateClients("Client #" + count + " has left the server!");
+					//updateClients("Client #" + count + " has left the server!");
 					clients.remove(this);
 					break;
 				}
