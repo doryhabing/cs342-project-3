@@ -12,4 +12,6 @@ public class Game {
     public String newWord(String category) {
         return gl.pick_word(category);
     }
+
+
 }

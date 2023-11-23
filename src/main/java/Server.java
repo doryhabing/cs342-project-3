@@ -9,8 +9,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 public class Server {
-	int port;
-	int count = 1;
+	int port, count = 1;
+	String current_letter;
 	ArrayList<ClientThread> clients = new ArrayList<ClientThread>();
 	TheServer server;
 	private Consumer<Serializable> callback;
@@ -96,6 +96,7 @@ public class Server {
 
 					} else if (data.length() < 2){
 						logic.guessed_letters.add(data);
+						current_letter = data;
 					}
 
 					i++;
