@@ -5,16 +5,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
 public class Server {
 	int port, count = 1;
-	String current_letter;
+	String current_letter, prev_data;
 	ArrayList<ClientThread> clients = new ArrayList<ClientThread>();
 	TheServer server;
 	private Consumer<Serializable> callback;
-	Game game = new Game();
+	//Game game = new Game();
 	GameLogic logic = new GameLogic();
 
 	Server(Consumer<Serializable> call, String port_string) {
@@ -82,24 +83,37 @@ public class Server {
 				System.out.println("Streams not open");
 			}
 
-			int i = 0;
 			while (true) {
 				try {
 					String data = in.readObject().toString();
 					callback.accept("client: " + count + " sent: " + data);
 
-					if (i == 0 && data.length() >= 2) {
-						System.out.println(data);
-						String new_word = game.newWord(data);
+					if (Objects.equals(prev_data, "category")) {
+						String new_word = logic.pick_word(data);
 						updateClients("length");
 						updateClients(String.valueOf(new_word.length()));
-
 					} else if (data.length() < 2){
-						logic.guessed_letters.add(data);
-						current_letter = data;
+						boolean is_correct = logic.check_letter(data);
+
+						if (is_correct) {
+							updateClients("correct");
+							Set<Integer> indexes = logic.get_letter_index();
+
+							for (int index : indexes) {
+								updateClients(String.valueOf(index));
+							}
+
+							updateClients("lives");
+							updateClients(String.valueOf(logic.guesses_remaining()));
+						} else {
+							updateClients("incorrect");
+							logic.count_guesses();
+							System.out.println(logic.guess_count);
+							updateClients(String.valueOf(logic.guesses_remaining()));
+						}
 					}
 
-					i++;
+					prev_data = data;
 				} catch (Exception e) {
 					callback.accept("OOOOPPs...Something wrong with the socket from client: " + count + "....closing down!");
 					//updateClients("Client #" + count + " has left the server!");
