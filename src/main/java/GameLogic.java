@@ -25,6 +25,7 @@ public class GameLogic {
         category1 = cat1.category_name;
         category2 = cat2.category_name;
         category3 = cat3.category_name;
+        guess_count = 0;
     }
 
     public String pick_word(String category) {
