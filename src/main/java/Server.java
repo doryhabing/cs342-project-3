@@ -34,7 +34,7 @@ public class Server {
 
 				while (true) {
 					ClientThread c = new ClientThread(mysocket.accept(), count);
-					callback.accept("client has connected to server: " + "client #" + count);
+					callback.accept("Client has connected to server: " + "client #" + count);
 					clients.add(c);
 					c.start();
 					count++;
@@ -86,7 +86,7 @@ public class Server {
 			while (true) {
 				try {
 					String data = in.readObject().toString();
-					callback.accept("client: " + count + " sent: " + data);
+					callback.accept("Client #" + count + " sent: " + data);
 
 					if (Objects.equals(prev_data, "category")) {
 						String new_word = logic.pick_word(data);
@@ -115,7 +115,7 @@ public class Server {
 
 					prev_data = data;
 				} catch (Exception e) {
-					callback.accept("OOOOPPs...Something wrong with the socket from client: " + count + "....closing down!");
+					callback.accept("Client #" + count + " has left.");
 					//updateClients("Client #" + count + " has left the server!");
 					clients.remove(this);
 					break;

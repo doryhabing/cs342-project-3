@@ -88,7 +88,7 @@ public class GuiServer extends Application{
 	public Scene createServerGui() {
 		BorderPane pane = new BorderPane();
 		pane.setPadding(new Insets(70));
-		pane.setStyle("-fx-background-color: coral");
+		pane.setStyle("-fx-background-color: lightBlue");
 		pane.setCenter(listItems);
 	
 		return new Scene(pane, 500, 400);
