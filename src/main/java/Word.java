@@ -3,6 +3,7 @@ public class Word {
     String word;
     char[] letters;
     boolean guessed = false;
+    boolean lost = false;
 
     Word() {
         this.word_length = 0;

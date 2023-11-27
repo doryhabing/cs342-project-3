@@ -13,18 +13,4 @@ public class Category {
         this.word3 = new Word();
     }
 
-
-
-//    public Word getWord1(){
-//        return word1;
-//    }
-//
-//    public Word getWord2(){
-//        return word2;
-//    }
-//
-//    public Word getWord3(){
-//        return word3;
-//    }
-
 }
