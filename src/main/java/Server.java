@@ -10,12 +10,11 @@ import java.util.function.Consumer;
 
 public class Server {
 	int port, count = 1;
-	String current_letter, prev_data;
+	String prev_data;
 	ArrayList<ClientThread> clients = new ArrayList<ClientThread>();
 	TheServer server;
 	private Consumer<Serializable> callback;
-	//Game game = new Game();
-	GameLogic logic = new GameLogic();
+	GameLogic logic;
 
 	Server(Consumer<Serializable> call, String port_string) {
 		callback = call;
@@ -73,6 +72,7 @@ public class Server {
 				in = new ObjectInputStream(connection.getInputStream());
 				out = new ObjectOutputStream(connection.getOutputStream());
 				connection.setTcpNoDelay(true);
+				logic = new GameLogic();
 
 				updateClients("category1 " + logic.category1);
 				updateClients("category2 " + logic.category2);
@@ -86,6 +86,7 @@ public class Server {
 				try {
 					String data = in.readObject().toString();
 					callback.accept("Client #" + count + " sent: " + data);
+					System.out.println(data);
 
 					if (data.contains("category")) {
 						String category = data.substring(9);
@@ -103,12 +104,17 @@ public class Server {
 							}
 
 							if (logic.check_win()) {
+								updateClients("win " + logic.wins);
+								updateClients("disable " + logic.current_category);
+								logic.current_category = "";
 								if (logic.evaluate_win()) {
 									updateClients("won game");
 								}
-								else {
-									updateClients("win " + logic.wins);
-								}
+//								else {
+//									updateClients("win " + logic.wins);
+//									updateClients("disable " + logic.current_category);
+//									logic.current_category = "";
+//								}
 							}
 							updateClients("lives " + logic.guesses_remaining());
 
@@ -117,11 +123,10 @@ public class Server {
 							int guesses_left = logic.guesses_remaining();
 							updateClients("incorrect " + guesses_left);
 							if (logic.check_loss()) {
+								updateClients("loss " + logic.losses);
+								System.out.println("LOSSES " + logic.losses);
 								if (logic.evaluate_loss()) {
 									updateClients("lost game");
-								}
-								else {
-									updateClients("loss " + logic.losses);
 								}
 							}
 						}

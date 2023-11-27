@@ -4,7 +4,7 @@ public class GameLogic {
     String category1, category2, category3, current_letter, current_word, current_category;
     Category cat1, cat2, cat3;
     int wins = 0, losses = 0, category1_used_word_count = 0, category2_used_word_count = 0, category3_used_word_count = 0, guess_count = 0;
-    List<String> correct_letters;
+    List<String> correct_letters, used_words;
 
     GameLogic() {
         cat1 = new Category("Animals", 1);
@@ -21,6 +21,8 @@ public class GameLogic {
         cat3.word3.setWord("guava");
 
         correct_letters = new ArrayList<>();
+        used_words = new ArrayList<>();
+
         category1 = cat1.category_name;
         category2 = cat2.category_name;
         category3 = cat3.category_name;
@@ -29,50 +31,47 @@ public class GameLogic {
 
     public String pick_word(String category) {
         current_category = category;
+        current_word = "";
+        System.out.println("CURR CAT " + category);
         if (Objects.equals(category1, category)) {
+            System.out.println("CAT1 " + category);
             if (!cat1.word1.guessed && !cat1.word1.lost) {
                 category1_used_word_count++;
                 current_word = cat1.word1.word;
-                return current_word;
             } else if (!cat1.word2.guessed && !cat1.word2.lost) {
                 category1_used_word_count++;
                 current_word = cat1.word2.word;
-                return current_word;
             } else if (!cat1.word3.guessed && !cat1.word3.lost) {
                 category1_used_word_count++;
                 current_word = cat1.word3.word;
-                return current_word;
             }
         } else if (Objects.equals(category2, category)) {
+            System.out.println("CAT2 " + category);
             if (!cat2.word1.guessed && !cat2.word1.lost) {
                 category2_used_word_count++;
                 current_word = cat2.word1.word;
-                return current_word;
             } else if (!cat2.word2.guessed && !cat2.word2.lost) {
                 category2_used_word_count++;
                 current_word = cat2.word2.word;
-                return current_word;
             } else if (!cat2.word3.guessed && !cat2.word3.lost) {
                 category2_used_word_count++;
                 current_word = cat2.word3.word;
-                return current_word;
             }
         } else if (Objects.equals(category3, category)) {
+            System.out.println("CAT3 " + category);
             if (!cat3.word1.guessed && !cat3.word1.lost) {
                 category3_used_word_count++;
                 current_word = cat3.word1.word;
-                return current_word;
             } else if (!cat3.word2.guessed && !cat3.word2.lost) {
                 category3_used_word_count++;
                 current_word = cat3.word2.word;
-                return current_word;
             } else if (!cat3.word3.guessed && !cat3.word3.lost) {
                 category3_used_word_count++;
                 current_word = cat3.word3.word;
-                return current_word;
             }
         }
-        return "";
+        used_words.add(current_word);
+        return current_word;
     }
 
     public void count_guesses() {
@@ -140,6 +139,7 @@ public class GameLogic {
                     cat3.word3.lost = false;
                 }
             }
+            correct_letters.clear();
             return true;
         }
         return false;
@@ -182,12 +182,18 @@ public class GameLogic {
                     cat3.word3.lost = true;
                 }
             }
+            correct_letters.clear();
             return true;
         }
         return false;
     }
 
     public boolean evaluate_loss() {
+        if (category1_used_word_count == 3 || category2_used_word_count == 3 || category3_used_word_count == 3) {
+            if (wins != 3) {
+                return true;
+            }
+        }
         return losses == 3;
     }
 }
